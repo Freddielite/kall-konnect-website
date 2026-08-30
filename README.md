@@ -8,16 +8,27 @@ without touching code.
 
 - `index.html` is served as-is by Vercel. No build step.
 - `admin.html` is a plain HTML/JS page (no framework) behind a single
-  password. Once signed in it can:
-  - Edit the raw HTML of `index.html` and commit the change straight to
-    GitHub via the Contents API — that commit is what triggers Vercel's
-    normal auto-deploy.
+  password. It never shows raw HTML to whoever is signed in — every editable
+  bit of copy on the page (headline, card text, download section, footer,
+  etc.) has a stable `id` in `index.html`, and the admin panel reads/writes
+  those elements as plain text via a simple form. Once signed in it can:
+  - Edit the page's text through labeled fields and commit the change
+    straight to GitHub via the Contents API — that commit is what triggers
+    Vercel's normal auto-deploy. Under the hood this still fetches and saves
+    the full `index.html`, it's just parsed/patched by element `id` instead
+    of being shown as a textarea.
   - Upload a new APK. The file goes **directly from your browser to Vercel
     Blob storage**, not through a Vercel function, because Vercel functions
     reject any request body over 4.5MB and a real APK is almost always
     bigger than that. Once the upload finishes, the admin panel patches the
-    download link (`#apk-download-link`) and version note
-    (`#apk-version-note`) in `index.html` and commits that too.
+    download link and version label (`#apk-download-link`,
+    `#apk-version-note`) in `index.html` and commits that too. The
+    permanent "allow installs from unknown sources" line lives in its own
+    element (`#android-note`) so it's never duplicated by a publish.
+  - If you ever add a new piece of copy to `index.html` that should be
+    editable from the admin, give that element a stable `id` and add a
+    matching entry to the `FIELDS` array near the top of the `<script>` in
+    `admin.html`.
 - Nothing is stored in a database. GitHub is the only source of truth for
   the page content; Vercel Blob is the only storage for APK files.
 

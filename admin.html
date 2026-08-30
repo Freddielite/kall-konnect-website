@@ -4,78 +4,428 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Kall Konnect — Admin</title>
+<link rel="icon" type="image/svg+xml" href="/favicon.svg">
+<link rel="icon" type="image/x-icon" href="/favicon.ico">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
 <style>
-  :root { --coral: #FF7A50; --ink: #2A2A33; --ink-soft: #6b6b76; --bg: #fff5eb; --surface: #ffffff; --border: #eadfd3; }
+  @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@600;700;800&family=Inter:wght@400;500;600;700&display=swap');
+
+  :root{
+    --coral: #FF9670;
+    --coral-deep: #FF7A50;
+    --teal: #3E8C7F;
+    --cream: #fff5eb;
+    --cream-deep: #FFE9D6;
+    --surface: #ffffff;
+    --ink: #2A2A33;
+    --ink-soft: #6b6b76;
+    --ink-faint: #a3a3ad;
+    --border-soft: #eee0d2;
+    --card-shadow: 0 8px 24px rgba(255,122,80,0.09);
+    --ok-bg: #e3f5ee; --ok-fg: #1f7a5c;
+    --err-bg: #fdecea; --err-fg: #b3261e;
+  }
   * { box-sizing: border-box; }
-  body { font-family: system-ui, -apple-system, sans-serif; background: var(--bg); color: var(--ink); margin: 0; padding: 24px; }
-  .wrap { max-width: 760px; margin: 0 auto; }
-  h1 { font-size: 20px; margin-bottom: 4px; }
-  .sub { color: var(--ink-soft); font-size: 14px; margin-bottom: 24px; }
-  .card { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 20px; margin-bottom: 20px; }
-  label { display: block; font-size: 13px; font-weight: 600; margin-bottom: 6px; }
-  input[type=password], input[type=text], textarea {
-    width: 100%; padding: 10px 12px; border: 1px solid var(--border); border-radius: 8px;
-    font-size: 14px; font-family: inherit; background: #fff;
+  html { scroll-behavior: smooth; }
+  body {
+    font-family: 'Inter', sans-serif;
+    background: var(--cream);
+    color: var(--ink);
+    margin: 0;
   }
-  textarea { min-height: 420px; font-family: ui-monospace, monospace; font-size: 12.5px; line-height: 1.5; resize: vertical; }
-  button {
-    background: var(--coral); color: #fff; border: none; padding: 10px 18px; border-radius: 8px;
-    font-size: 14px; font-weight: 600; cursor: pointer; margin-top: 10px;
+  h1, h2, h3, h4 { font-family: 'Poppins', sans-serif; }
+  .wrap { max-width: 760px; margin: 0 auto; padding: 0 20px 80px; }
+
+  /* ---------- TOP BAR ---------- */
+  .topbar {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 18px 20px; max-width: 800px; margin: 0 auto; gap: 12px;
   }
-  button:disabled { opacity: 0.5; cursor: not-allowed; }
-  button.secondary { background: transparent; color: var(--ink-soft); border: 1px solid var(--border); }
-  .msg { font-size: 13px; margin-top: 10px; padding: 8px 12px; border-radius: 8px; }
-  .msg.ok { background: #e3f5ee; color: #1f7a5c; }
-  .msg.err { background: #fdecea; color: #b3261e; }
-  .row { display: flex; gap: 12px; align-items: flex-end; flex-wrap: wrap; }
-  .row > div { flex: 1; min-width: 180px; }
-  #app { display: none; }
-  progress { width: 100%; margin-top: 10px; }
+  .brand { display: flex; align-items: center; gap: 10px; }
+  .logo-mark {
+    width: 34px; height: 34px; border-radius: 10px; background: var(--coral);
+    display: flex; align-items: center; justify-content: center;
+    box-shadow: 0 4px 14px rgba(255,122,80,0.3); flex-shrink: 0; overflow: hidden;
+  }
+  .logo-mark svg { width: 100%; height: 100%; }
+  .brand-name { font-family: 'Poppins'; font-weight: 800; font-size: 17px; }
+  .brand-pill {
+    font-family: 'Inter'; font-weight: 700; font-size: 11px; letter-spacing: .03em;
+    color: var(--coral-deep); background: var(--cream-deep); padding: 3px 9px;
+    border-radius: 999px; margin-left: 2px; text-transform: uppercase;
+  }
+  .topbar-right { display: flex; align-items: center; gap: 10px; }
+  .link-btn {
+    color: var(--ink-soft); text-decoration: none; font-size: 13.5px; font-weight: 600;
+    padding: 8px 4px;
+  }
+  .link-btn:hover { color: var(--coral-deep); }
+  .btn-ghost {
+    background: var(--surface); color: var(--ink-soft); border: 1.5px solid var(--border-soft);
+    padding: 8px 16px; border-radius: 999px; font-size: 13.5px; font-weight: 600;
+    cursor: pointer; font-family: inherit; transition: border-color .15s ease, color .15s ease;
+  }
+  .btn-ghost:hover { border-color: var(--coral); color: var(--coral-deep); }
+
+  /* ---------- PAGE INTRO ---------- */
+  .intro { text-align: center; margin: 6px 0 30px; }
+  .intro h1 { font-size: 24px; margin: 0 0 6px; }
+  .intro p { color: var(--ink-soft); font-size: 14.5px; margin: 0; }
+
+  /* ---------- CARDS ---------- */
+  .card {
+    background: var(--surface); border: 1px solid var(--border-soft); border-radius: 22px;
+    padding: 26px 26px 28px; margin-bottom: 22px; box-shadow: var(--card-shadow);
+  }
+  .card-head { margin-bottom: 18px; }
+  .card-head h2 { font-size: 18px; margin: 0 0 4px; }
+  .card-head p { color: var(--ink-soft); font-size: 13.5px; margin: 0; line-height: 1.5; }
+  .section-label {
+    font-family: 'Poppins'; font-weight: 700; font-size: 12.5px; color: var(--coral-deep);
+    text-transform: uppercase; letter-spacing: .04em; margin: 26px 0 14px;
+    padding-top: 18px; border-top: 1px solid var(--border-soft);
+  }
+  .section-label:first-of-type { margin-top: 0; padding-top: 0; border-top: none; }
+
+  /* ---------- FORM FIELDS ---------- */
+  .field { margin-bottom: 16px; }
+  .field label {
+    display: block; font-size: 13.5px; font-weight: 700; margin-bottom: 3px;
+  }
+  .field .hint { display: block; font-size: 12px; color: var(--ink-faint); margin-bottom: 7px; line-height: 1.4; }
+  .field input[type=text], .field input[type=password], .field textarea {
+    width: 100%; padding: 11px 13px; border: 1.5px solid var(--border-soft); border-radius: 10px;
+    font-size: 14px; font-family: inherit; background: var(--cream); color: var(--ink);
+    transition: border-color .15s ease, background .15s ease;
+  }
+  .field input:focus, .field textarea:focus {
+    outline: none; border-color: var(--coral); background: var(--surface);
+  }
+  .field textarea { min-height: 64px; resize: vertical; line-height: 1.5; }
+  .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+  @media (max-width: 560px) { .two-col { grid-template-columns: 1fr; } }
+
+  /* ---------- BUTTONS ---------- */
+  .btn-primary {
+    display: inline-flex; align-items: center; gap: 8px; justify-content: center;
+    background: linear-gradient(135deg, var(--coral) 0%, var(--coral-deep) 100%);
+    color: #fff; border: none; padding: 13px 24px; border-radius: 999px;
+    font-size: 14.5px; font-weight: 700; cursor: pointer; font-family: inherit;
+    box-shadow: 0 8px 18px rgba(255,122,80,0.28); transition: transform .15s ease, box-shadow .15s ease;
+  }
+  .btn-primary:hover:not(:disabled) { transform: translateY(-1px); box-shadow: 0 10px 22px rgba(255,122,80,0.35); }
+  .btn-primary:disabled { opacity: .45; cursor: not-allowed; transform: none; box-shadow: none; }
+  .btn-secondary {
+    background: transparent; color: var(--ink-soft); border: 1.5px solid var(--border-soft);
+    padding: 12px 22px; border-radius: 999px; font-size: 14px; font-weight: 600;
+    cursor: pointer; font-family: inherit; transition: border-color .15s ease, color .15s ease;
+  }
+  .btn-secondary:hover { border-color: var(--ink-faint); color: var(--ink); }
+  .btn-row { display: flex; gap: 10px; flex-wrap: wrap; align-items: center; margin-top: 6px; }
+
+  /* ---------- MESSAGES ---------- */
+  .msg { font-size: 13.5px; margin-top: 12px; padding: 10px 14px; border-radius: 10px; font-weight: 600; display: none; }
+  .msg.show { display: block; }
+  .msg.ok { background: var(--ok-bg); color: var(--ok-fg); }
+  .msg.err { background: var(--err-bg); color: var(--err-fg); }
+  .msg.pending { background: var(--cream-deep); color: var(--coral-deep); }
+
+  /* ---------- LOGIN ---------- */
+  #login-view { display: flex; justify-content: center; padding-top: 8vh; }
+  .login-card {
+    background: var(--surface); border: 1px solid var(--border-soft); border-radius: 24px;
+    box-shadow: var(--card-shadow); padding: 34px 30px; width: 100%; max-width: 340px; text-align: center;
+  }
+  .login-card .logo-mark { width: 48px; height: 48px; border-radius: 14px; margin: 0 auto 16px; }
+  .login-card h1 { font-size: 19px; margin: 0 0 6px; }
+  .login-card p { color: var(--ink-soft); font-size: 13.5px; margin: 0 0 20px; }
+  .login-card .field { text-align: left; }
+  .login-card .btn-primary { width: 100%; margin-top: 6px; }
+
+  /* ---------- APK UPLOAD ---------- */
+  .status-line {
+    display: flex; align-items: center; gap: 8px; font-size: 13px; color: var(--ink-soft);
+    background: var(--cream); border-radius: 10px; padding: 10px 14px; margin-bottom: 18px;
+  }
+  .status-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--teal); flex-shrink: 0; }
+  .status-dot.warn { background: #E0704F; }
+
+  .dropzone {
+    border: 2px dashed var(--border-soft); border-radius: 16px; padding: 22px;
+    display: flex; align-items: center; gap: 14px; cursor: pointer; background: var(--cream);
+    transition: border-color .15s ease, background .15s ease;
+  }
+  .dropzone:hover, .dropzone.has-file { border-color: var(--coral); background: var(--cream-deep); }
+  .dropzone .dz-icon {
+    width: 42px; height: 42px; border-radius: 12px; background: var(--surface); flex-shrink: 0;
+    display: flex; align-items: center; justify-content: center; color: var(--coral-deep);
+  }
+  .dropzone .dz-icon svg { width: 22px; height: 22px; }
+  .dropzone .dz-text { flex: 1; min-width: 0; }
+  .dropzone .dz-title { font-weight: 700; font-size: 14px; margin-bottom: 2px; }
+  .dropzone .dz-sub { font-size: 12.5px; color: var(--ink-soft); overflow-wrap: anywhere; }
+  .dropzone input[type=file] { display: none; }
+
+  .progress-track { width: 100%; height: 8px; border-radius: 999px; background: var(--cream-deep); margin-top: 14px; overflow: hidden; display: none; }
+  .progress-fill { height: 100%; width: 0%; background: linear-gradient(90deg, var(--coral), var(--coral-deep)); border-radius: 999px; transition: width .2s ease; }
+
+  #app-view { display: none; }
 </style>
 </head>
 <body>
-<div class="wrap">
-  <h1>Kall Konnect — Admin</h1>
-  <p class="sub">Edit the download page and push a new APK build. Every save is a real commit to GitHub, which redeploys the site.</p>
 
-  <div id="login" class="card">
-    <label for="pw">Admin password</label>
-    <input type="password" id="pw" autocomplete="current-password">
-    <button id="loginBtn">Sign in</button>
-    <div id="loginMsg"></div>
+<div class="topbar">
+  <div class="brand">
+    <div class="logo-mark">
+      <svg viewBox="0 0 380 380" xmlns="http://www.w3.org/2000/svg">
+        <circle cx="190" cy="190" r="150" fill="#fff5eb"/>
+        <g clip-path="url(#nlc2)">
+          <clipPath id="nlc2"><circle cx="190" cy="190" r="150"/></clipPath>
+          <polygon points="40,40 340,40 340,340" fill="#FFB088"/>
+          <polygon points="40,40 40,340 340,340" fill="#fff5eb"/>
+          <ellipse cx="120" cy="300" rx="56" ry="44" fill="#FF7A50"/>
+          <circle cx="120" cy="228" r="40" fill="#FFCBA8"/>
+          <path d="M 82 228 A 38 38 0 0 1 158 228 L 158 210 A 38 38 0 0 0 82 210 Z" fill="#7A4A32"/>
+          <ellipse cx="260" cy="170" rx="56" ry="44" fill="#3E8C7F"/>
+          <circle cx="260" cy="98" r="40" fill="#7A5138"/>
+          <path d="M 222 98 A 38 38 0 0 1 298 98 L 298 80 A 38 38 0 0 0 222 80 Z" fill="#241812"/>
+        </g>
+      </svg>
+    </div>
+    <span class="brand-name">Kall Konnect</span>
+    <span class="brand-pill">Admin</span>
   </div>
+  <div class="topbar-right">
+    <a class="link-btn" href="/" target="_blank" rel="noopener">View live site ↗</a>
+    <button class="btn-ghost" id="logoutBtn" style="display:none">Sign out</button>
+  </div>
+</div>
 
-  <div id="app">
-    <div class="card">
-      <div class="row">
-        <div><h3 style="margin:0 0 4px">Android build</h3><p class="sub" style="margin:0">Upload a new APK — the download link and version note update automatically.</p></div>
-        <button class="secondary" id="logoutBtn" style="margin-top:0">Sign out</button>
-      </div>
-      <div class="row" style="margin-top:14px">
-        <div>
-          <label for="apkFile">APK file</label>
-          <input type="text" id="apkFileName" disabled placeholder="No file chosen" style="background:#f7f2ea">
-          <input type="file" id="apkFile" accept=".apk" style="margin-top:6px">
-        </div>
-        <div>
-          <label for="apkVersion">Version label (optional, e.g. v1.4.0)</label>
-          <input type="text" id="apkVersion" placeholder="v1.4.0">
-        </div>
-      </div>
-      <button id="apkUploadBtn" disabled>Upload &amp; publish APK</button>
-      <progress id="apkProgress" value="0" max="100" style="display:none"></progress>
-      <div id="apkMsg"></div>
+<div id="login-view">
+  <div class="login-card">
+    <div class="logo-mark">
+      <svg viewBox="0 0 380 380" xmlns="http://www.w3.org/2000/svg">
+        <circle cx="190" cy="190" r="150" fill="#fff5eb"/>
+        <g clip-path="url(#nlc3)">
+          <clipPath id="nlc3"><circle cx="190" cy="190" r="150"/></clipPath>
+          <polygon points="40,40 340,40 340,340" fill="#FFB088"/>
+          <polygon points="40,40 40,340 340,340" fill="#fff5eb"/>
+          <ellipse cx="120" cy="300" rx="56" ry="44" fill="#FF7A50"/>
+          <circle cx="120" cy="228" r="40" fill="#FFCBA8"/>
+          <path d="M 82 228 A 38 38 0 0 1 158 228 L 158 210 A 38 38 0 0 0 82 210 Z" fill="#7A4A32"/>
+          <ellipse cx="260" cy="170" rx="56" ry="44" fill="#3E8C7F"/>
+          <circle cx="260" cy="98" r="40" fill="#7A5138"/>
+          <path d="M 222 98 A 38 38 0 0 1 298 98 L 298 80 A 38 38 0 0 0 222 80 Z" fill="#241812"/>
+        </g>
+      </svg>
+    </div>
+    <h1>Admin sign-in</h1>
+    <p>Enter the admin password to edit Kall Konnect.</p>
+    <div class="field">
+      <label for="pw">Password</label>
+      <input type="password" id="pw" autocomplete="current-password">
+    </div>
+    <button class="btn-primary" id="loginBtn" style="width:100%">Sign in</button>
+    <div id="loginMsg" class="msg err"></div>
+  </div>
+</div>
+
+<div id="app-view">
+  <div class="wrap">
+    <div class="intro">
+      <h1>Edit your site</h1>
+      <p>Update your app's content and publish a new Android build. No code, ever.</p>
     </div>
 
+    <!-- ANDROID BUILD -->
     <div class="card">
-      <h3 style="margin:0 0 4px">Page HTML</h3>
-      <p class="sub" style="margin:0 0 12px">Raw content of index.html. Edit anything — copy, colors, sections — then save.</p>
-      <textarea id="contentBox" spellcheck="false"></textarea>
-      <div class="row">
-        <button id="reloadBtn" class="secondary">Reload from GitHub</button>
-        <button id="saveBtn">Save &amp; deploy</button>
+      <div class="card-head">
+        <h2>Android build</h2>
+        <p>Upload a new APK. The download button and version note on the site update automatically.</p>
       </div>
-      <div id="contentMsg"></div>
+
+      <div class="status-line">
+        <span class="status-dot" id="statusDot"></span>
+        <span id="statusText">Checking current build…</span>
+      </div>
+
+      <div class="field">
+        <label>APK file</label>
+        <label class="dropzone" id="dropzone" for="apkFile">
+          <div class="dz-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v13"/><path d="M6 11l6 6 6-6"/><path d="M4 20h16"/></svg>
+          </div>
+          <div class="dz-text">
+            <div class="dz-title" id="dzTitle">Choose an APK file</div>
+            <div class="dz-sub" id="dzSub">Tap to browse, or drop a .apk here</div>
+          </div>
+        </label>
+        <input type="file" id="apkFile" accept=".apk">
+      </div>
+
+      <div class="field">
+        <label for="apkVersion">Version label</label>
+        <span class="hint">Optional, e.g. v1.4.0 — shown to visitors under the download button.</span>
+        <input type="text" id="apkVersion" placeholder="v1.4.0">
+      </div>
+
+      <button class="btn-primary" id="apkUploadBtn" disabled>Upload &amp; publish APK</button>
+      <div class="progress-track" id="apkProgressTrack"><div class="progress-fill" id="apkProgressFill"></div></div>
+      <div id="apkMsg" class="msg"></div>
+    </div>
+
+    <!-- PAGE CONTENT -->
+    <div class="card">
+      <div class="card-head">
+        <h2>Page content</h2>
+        <p>Everything visitors read on the site. Change anything below, then save at the bottom.</p>
+      </div>
+
+      <div class="section-label">Browser tab</div>
+      <div class="field">
+        <label for="f-title">Tab title</label>
+        <span class="hint">Shown in the browser tab and in search results.</span>
+        <input type="text" id="f-title">
+      </div>
+      <div class="field">
+        <label for="f-metadesc">Search description</label>
+        <span class="hint">The short blurb Google shows under your site's link.</span>
+        <textarea id="f-metadesc"></textarea>
+      </div>
+
+      <div class="section-label">Header</div>
+      <div class="field">
+        <label for="f-navcta">Header button</label>
+        <span class="hint">Top-right button on the site.</span>
+        <input type="text" id="f-navcta">
+      </div>
+
+      <div class="section-label">Hero (top banner)</div>
+      <div class="field">
+        <label for="f-eyebrow">Badge above the headline</label>
+        <input type="text" id="f-eyebrow">
+      </div>
+      <div class="field">
+        <label for="f-headline">Main headline</label>
+        <input type="text" id="f-headline">
+      </div>
+      <div class="field">
+        <label for="f-subtitle">Subheading</label>
+        <textarea id="f-subtitle"></textarea>
+      </div>
+      <div class="two-col">
+        <div class="field">
+          <label for="f-btnprimary">Primary button text</label>
+          <span class="hint">Solid white button.</span>
+          <input type="text" id="f-btnprimary">
+        </div>
+        <div class="field">
+          <label for="f-btnsecondary">Secondary button text</label>
+          <span class="hint">Outlined button.</span>
+          <input type="text" id="f-btnsecondary">
+        </div>
+      </div>
+
+      <div class="section-label">"Made for real conversations" section</div>
+      <div class="field">
+        <label for="f-whyheading">Section title</label>
+        <input type="text" id="f-whyheading">
+      </div>
+      <div class="field">
+        <label for="f-whysub">Section subtitle</label>
+        <textarea id="f-whysub"></textarea>
+      </div>
+      <div class="field">
+        <label for="f-feat1title">Card 1 title</label>
+        <input type="text" id="f-feat1title">
+      </div>
+      <div class="field">
+        <label for="f-feat1desc">Card 1 description</label>
+        <textarea id="f-feat1desc"></textarea>
+      </div>
+      <div class="field">
+        <label for="f-feat2title">Card 2 title</label>
+        <input type="text" id="f-feat2title">
+      </div>
+      <div class="field">
+        <label for="f-feat2desc">Card 2 description</label>
+        <textarea id="f-feat2desc"></textarea>
+      </div>
+      <div class="field">
+        <label for="f-feat3title">Card 3 title</label>
+        <input type="text" id="f-feat3title">
+      </div>
+      <div class="field">
+        <label for="f-feat3desc">Card 3 description</label>
+        <textarea id="f-feat3desc"></textarea>
+      </div>
+
+      <div class="section-label">Download section</div>
+      <div class="field">
+        <label for="f-dlheading">Section title</label>
+        <input type="text" id="f-dlheading">
+      </div>
+      <div class="field">
+        <label for="f-dlsub">Section subtitle</label>
+        <textarea id="f-dlsub"></textarea>
+      </div>
+
+      <div class="field">
+        <label for="f-androidtitle">Android card title</label>
+        <input type="text" id="f-androidtitle">
+      </div>
+      <div class="field">
+        <label for="f-androiddesc">Android card description</label>
+        <textarea id="f-androiddesc"></textarea>
+      </div>
+      <div class="field">
+        <label for="f-androidbtn">Android download button text</label>
+        <input type="text" id="f-androidbtn">
+      </div>
+      <div class="field">
+        <label for="f-androidnote">Android permission note</label>
+        <span class="hint">The line about "allow installs from unknown sources."</span>
+        <textarea id="f-androidnote"></textarea>
+      </div>
+
+      <div class="field">
+        <label for="f-iostitle">iPhone card title</label>
+        <input type="text" id="f-iostitle">
+      </div>
+      <div class="field">
+        <label for="f-iosdesc">iPhone card description</label>
+        <textarea id="f-iosdesc"></textarea>
+      </div>
+      <div class="field">
+        <label for="f-iosstep1">iPhone step 1</label>
+        <input type="text" id="f-iosstep1">
+      </div>
+      <div class="field">
+        <label for="f-iosstep2">iPhone step 2</label>
+        <input type="text" id="f-iosstep2">
+      </div>
+      <div class="field">
+        <label for="f-iosstep3">iPhone step 3</label>
+        <input type="text" id="f-iosstep3">
+      </div>
+      <div class="field">
+        <label for="f-iosstep4">iPhone step 4</label>
+        <span class="hint">Editing a step removes its bold emphasis — everything else about the site stays the same.</span>
+        <input type="text" id="f-iosstep4">
+      </div>
+
+      <div class="section-label">Footer</div>
+      <div class="field">
+        <label for="f-footer">Footer message</label>
+        <span class="hint">Shown at the very bottom of the site, right after the ♥.</span>
+        <input type="text" id="f-footer">
+      </div>
+
+      <div class="btn-row">
+        <button class="btn-primary" id="saveBtn">Save changes</button>
+        <button class="btn-secondary" id="reloadBtn">Discard &amp; reload</button>
+      </div>
+      <div id="contentMsg" class="msg"></div>
     </div>
   </div>
 </div>
@@ -83,53 +433,138 @@
 <script type="module">
   import { upload } from 'https://esm.sh/@vercel/blob@2.8.0/client';
 
-  const loginCard = document.getElementById('login');
-  const app = document.getElementById('app');
+  const loginView = document.getElementById('login-view');
+  const appView = document.getElementById('app-view');
   const pwInput = document.getElementById('pw');
   const loginBtn = document.getElementById('loginBtn');
   const loginMsg = document.getElementById('loginMsg');
   const logoutBtn = document.getElementById('logoutBtn');
 
-  const contentBox = document.getElementById('contentBox');
   const saveBtn = document.getElementById('saveBtn');
   const reloadBtn = document.getElementById('reloadBtn');
   const contentMsg = document.getElementById('contentMsg');
 
   const apkFile = document.getElementById('apkFile');
-  const apkFileName = document.getElementById('apkFileName');
+  const dropzone = document.getElementById('dropzone');
+  const dzTitle = document.getElementById('dzTitle');
+  const dzSub = document.getElementById('dzSub');
   const apkVersion = document.getElementById('apkVersion');
   const apkUploadBtn = document.getElementById('apkUploadBtn');
-  const apkProgress = document.getElementById('apkProgress');
+  const apkProgressTrack = document.getElementById('apkProgressTrack');
+  const apkProgressFill = document.getElementById('apkProgressFill');
   const apkMsg = document.getElementById('apkMsg');
+  const statusDot = document.getElementById('statusDot');
+  const statusText = document.getElementById('statusText');
 
+  // Maps each form field to where it lives in index.html. `attr` is used
+  // for things like <meta content="..."> where the value isn't the
+  // element's text. Everything else is read/written as plain text, so the
+  // person editing it never sees or writes any HTML.
+  const FIELDS = [
+    { form: 'f-title', selector: '#meta-title' },
+    { form: 'f-metadesc', selector: '#meta-description', attr: 'content' },
+    { form: 'f-navcta', selector: '#nav-cta' },
+    { form: 'f-eyebrow', selector: '#hero-eyebrow' },
+    { form: 'f-headline', selector: '#hero-headline' },
+    { form: 'f-subtitle', selector: '#hero-subtitle' },
+    { form: 'f-btnprimary', selector: '#hero-btn-primary-label' },
+    { form: 'f-btnsecondary', selector: '#hero-btn-secondary-label' },
+    { form: 'f-whyheading', selector: '#why-heading' },
+    { form: 'f-whysub', selector: '#why-subheading' },
+    { form: 'f-feat1title', selector: '#feature1-title' },
+    { form: 'f-feat1desc', selector: '#feature1-desc' },
+    { form: 'f-feat2title', selector: '#feature2-title' },
+    { form: 'f-feat2desc', selector: '#feature2-desc' },
+    { form: 'f-feat3title', selector: '#feature3-title' },
+    { form: 'f-feat3desc', selector: '#feature3-desc' },
+    { form: 'f-dlheading', selector: '#download-heading' },
+    { form: 'f-dlsub', selector: '#download-subheading' },
+    { form: 'f-androidtitle', selector: '#android-title' },
+    { form: 'f-androiddesc', selector: '#android-desc' },
+    { form: 'f-androidbtn', selector: '#android-btn-label' },
+    { form: 'f-androidnote', selector: '#android-note' },
+    { form: 'f-iostitle', selector: '#ios-title' },
+    { form: 'f-iosdesc', selector: '#ios-desc' },
+    { form: 'f-iosstep1', selector: '#ios-step-1' },
+    { form: 'f-iosstep2', selector: '#ios-step-2' },
+    { form: 'f-iosstep3', selector: '#ios-step-3' },
+    { form: 'f-iosstep4', selector: '#ios-step-4' },
+    { form: 'f-footer', selector: '#footer-text' },
+  ];
+
+  let rawHtml = null;   // last-loaded full page HTML (never shown to the user)
   let currentSha = null;
 
-  function showMsg(el, text, ok) {
+  function showMsg(el, text, kind) {
     el.textContent = text;
-    el.className = 'msg ' + (ok ? 'ok' : 'err');
+    el.className = 'msg show ' + kind;
+  }
+  function hideMsg(el) {
+    el.className = 'msg';
+  }
+
+  function parseDoc(html) {
+    return new DOMParser().parseFromString(html, 'text/html');
+  }
+  function serializeDoc(doc) {
+    return '<!DOCTYPE html>\n' + doc.documentElement.outerHTML;
+  }
+
+  function populateForm(doc) {
+    for (const f of FIELDS) {
+      const el = doc.querySelector(f.selector);
+      const input = document.getElementById(f.form);
+      if (!el || !input) continue;
+      input.value = f.attr ? (el.getAttribute(f.attr) || '') : el.textContent.trim();
+    }
+    updateBuildStatus(doc);
+  }
+
+  function applyFormToDoc(doc) {
+    for (const f of FIELDS) {
+      const el = doc.querySelector(f.selector);
+      const input = document.getElementById(f.form);
+      if (!el || !input) continue;
+      if (f.attr) el.setAttribute(f.attr, input.value);
+      else el.textContent = input.value;
+    }
+  }
+
+  function updateBuildStatus(doc) {
+    const link = doc.querySelector('#apk-download-link');
+    const version = link ? (link.getAttribute('data-version') || '').trim() : '';
+    const isPlaceholder = !link || link.getAttribute('href') === 'REPLACE_WITH_YOUR_APK_URL';
+    if (isPlaceholder) {
+      statusDot.className = 'status-dot warn';
+      statusText.textContent = 'No build published yet — the site is showing a placeholder link.';
+    } else {
+      statusDot.className = 'status-dot';
+      statusText.textContent = version ? `Currently live: ${version}` : 'A build is live (no version label set).';
+    }
   }
 
   async function checkSession() {
     const res = await fetch('/api/admin/me');
     const data = await res.json();
     if (data.authenticated) {
-      loginCard.style.display = 'none';
-      app.style.display = 'block';
+      loginView.style.display = 'none';
+      appView.style.display = 'block';
+      logoutBtn.style.display = 'inline-flex';
       loadContent();
     }
   }
 
   async function loadContent() {
-    showMsg(contentMsg, 'Loading…', true);
     try {
       const res = await fetch('/api/admin/content');
       const data = await res.json();
-      if (!res.ok) throw new Error(data.error || 'Failed to load');
-      contentBox.value = data.content;
+      if (!res.ok) throw new Error(data.error || 'Failed to load site content');
+      rawHtml = data.content;
       currentSha = data.sha;
-      contentMsg.textContent = '';
+      populateForm(parseDoc(rawHtml));
+      hideMsg(contentMsg);
     } catch (err) {
-      showMsg(contentMsg, err.message, false);
+      showMsg(contentMsg, err.message, 'err');
     }
   }
 
@@ -144,11 +579,13 @@
       const data = await res.json();
       if (!res.ok) throw new Error(data.error || 'Login failed');
       pwInput.value = '';
-      loginCard.style.display = 'none';
-      app.style.display = 'block';
+      hideMsg(loginMsg);
+      loginView.style.display = 'none';
+      appView.style.display = 'block';
+      logoutBtn.style.display = 'inline-flex';
       loadContent();
     } catch (err) {
-      showMsg(loginMsg, err.message, false);
+      showMsg(loginMsg, err.message, 'err');
     } finally {
       loginBtn.disabled = false;
     }
@@ -164,24 +601,25 @@
   reloadBtn.addEventListener('click', loadContent);
 
   saveBtn.addEventListener('click', async () => {
+    if (!rawHtml) return;
     saveBtn.disabled = true;
-    showMsg(contentMsg, 'Saving…', true);
+    showMsg(contentMsg, 'Saving…', 'pending');
     try {
+      const doc = parseDoc(rawHtml);
+      applyFormToDoc(doc);
+      const html = serializeDoc(doc);
       const res = await fetch('/api/admin/content', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          content: contentBox.value,
-          sha: currentSha,
-          message: 'Edit index.html via admin panel',
-        }),
+        body: JSON.stringify({ content: html, sha: currentSha, message: 'Update page content via admin panel' }),
       });
       const data = await res.json();
       if (!res.ok) throw new Error(data.error || 'Save failed');
+      rawHtml = html;
       currentSha = data.sha;
-      showMsg(contentMsg, 'Saved. Vercel will redeploy in a moment.', true);
+      showMsg(contentMsg, 'Saved. Changes will apply in a moment.', 'ok');
     } catch (err) {
-      showMsg(contentMsg, err.message, false);
+      showMsg(contentMsg, err.message, 'err');
     } finally {
       saveBtn.disabled = false;
     }
@@ -189,7 +627,15 @@
 
   apkFile.addEventListener('change', () => {
     const f = apkFile.files[0];
-    apkFileName.value = f ? f.name : '';
+    if (f) {
+      dropzone.classList.add('has-file');
+      dzTitle.textContent = f.name;
+      dzSub.textContent = `${(f.size / (1024 * 1024)).toFixed(1)} MB — tap to choose a different file`;
+    } else {
+      dropzone.classList.remove('has-file');
+      dzTitle.textContent = 'Choose an APK file';
+      dzSub.textContent = 'Tap to browse, or drop a .apk here';
+    }
     apkUploadBtn.disabled = !f;
   });
 
@@ -197,9 +643,9 @@
     const file = apkFile.files[0];
     if (!file) return;
     apkUploadBtn.disabled = true;
-    apkProgress.style.display = 'block';
-    apkProgress.value = 0;
-    showMsg(apkMsg, 'Uploading to storage…', true);
+    apkProgressTrack.style.display = 'block';
+    apkProgressFill.style.width = '0%';
+    showMsg(apkMsg, 'Uploading to storage…', 'pending');
     try {
       // 1. Upload the APK straight to Vercel Blob from the browser. The
       //    file never touches our own serverless function, so there's no
@@ -207,59 +653,54 @@
       const blob = await upload(`releases/${Date.now()}-${file.name}`, file, {
         access: 'public',
         handleUploadUrl: '/api/admin/blob-upload',
-        onUploadProgress: (p) => { apkProgress.value = p.percentage; },
+        onUploadProgress: (p) => { apkProgressFill.style.width = p.percentage + '%'; },
       });
 
-      // 2. Fetch the latest index.html, patch the download link + version
-      //    note, and commit it back through the same content endpoint the
-      //    HTML editor above uses.
-      showMsg(apkMsg, 'Updating the download page…', true);
+      // 2. Fetch the latest index.html, patch the download link, version
+      //    label, and version note, then commit it back through the same
+      //    content endpoint the page-content editor above uses.
+      showMsg(apkMsg, 'Updating the download page…', 'pending');
       const getRes = await fetch('/api/admin/content');
       const getData = await getRes.json();
-      if (!getRes.ok) throw new Error(getData.error || 'Could not load index.html');
+      if (!getRes.ok) throw new Error(getData.error || 'Could not load the site content');
 
-      let html = getData.content;
+      const doc = parseDoc(getData.content);
       const version = apkVersion.value.trim();
-      const noteText = version
-        ? `Latest build: ${version}. Your phone may ask to "allow installs from unknown sources." That's normal, just tap allow and continue.`
-        : `Your phone may ask to "allow installs from unknown sources." That's normal, just tap allow and continue.`;
 
-      html = html.replace(
-        /(<a id="apk-download-link"[^>]*\shref=")[^"]*(")/,
-        `$1${blob.url}$2`
-      );
-      html = html.replace(
-        /(<a id="apk-download-link"[^>]*\sdata-version=")[^"]*(")/,
-        `$1${version}$2`
-      );
-      html = html.replace(
-        /<p id="apk-version-note"[^>]*>[^<]*<\/p>/,
-        `<p id="apk-version-note" class="dl-note">${noteText}</p>`
-      );
+      const link = doc.querySelector('#apk-download-link');
+      link.setAttribute('href', blob.url);
+      link.setAttribute('data-version', version);
 
+      // This note is ONLY the version label (or nothing). The separate,
+      // permanent "allow installs from unknown sources" line stays put
+      // and is never duplicated here.
+      const versionNote = doc.querySelector('#apk-version-note');
+      versionNote.classList.remove('warn');
+      versionNote.textContent = version ? `Latest build: ${version}` : '';
+
+      const html = serializeDoc(doc);
       const saveRes = await fetch('/api/admin/content', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          content: html,
-          sha: getData.sha,
-          message: `Publish APK ${version || file.name}`,
-        }),
+        body: JSON.stringify({ content: html, sha: getData.sha, message: `Publish APK ${version || file.name}` }),
       });
       const saveData = await saveRes.json();
-      if (!saveRes.ok) throw new Error(saveData.error || 'Could not save index.html');
+      if (!saveRes.ok) throw new Error(saveData.error || 'Could not save the site content');
 
+      rawHtml = html;
       currentSha = saveData.sha;
-      contentBox.value = html;
-      showMsg(apkMsg, 'APK published. Vercel will redeploy in a moment.', true);
+      populateForm(doc);
+      showMsg(apkMsg, 'APK published. Changes will apply in a moment.', 'ok');
       apkFile.value = '';
-      apkFileName.value = '';
+      dropzone.classList.remove('has-file');
+      dzTitle.textContent = 'Choose an APK file';
+      dzSub.textContent = 'Tap to browse, or drop a .apk here';
       apkVersion.value = '';
       apkUploadBtn.disabled = true;
     } catch (err) {
-      showMsg(apkMsg, err.message, false);
+      showMsg(apkMsg, err.message, 'err');
     } finally {
-      apkProgress.style.display = 'none';
+      apkProgressTrack.style.display = 'none';
     }
   });
 
