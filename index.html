@@ -5,6 +5,34 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title id="meta-title">Kall Konnect: Stay Close to the People Who Matter</title>
 <meta name="description" id="meta-description" content="Kall Konnect gently reminds you who to call today, then gets you into a call, WhatsApp, Instagram, or Snapchat in one tap.">
+<link rel="canonical" href="https://kallkonnect.vercel.app/">
+
+<!-- Open Graph (Facebook, WhatsApp, LinkedIn, iMessage, etc.) -->
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://kallkonnect.vercel.app/">
+<meta property="og:site_name" content="Kall Konnect">
+<meta property="og:title" id="og-title" content="Kall Konnect: Stay Close to the People Who Matter">
+<meta property="og:description" id="og-description" content="Kall Konnect gently reminds you who to call today, then gets you into a call, WhatsApp, Instagram, or Snapchat in one tap.">
+<meta property="og:image" content="https://kallkonnect.vercel.app/og-image.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+
+<!-- Twitter Card -->
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" id="twitter-title" content="Kall Konnect: Stay Close to the People Who Matter">
+<meta name="twitter:description" id="twitter-description" content="Kall Konnect gently reminds you who to call today, then gets you into a call, WhatsApp, Instagram, or Snapchat in one tap.">
+<meta name="twitter:image" content="https://kallkonnect.vercel.app/og-image.png">
+
+<meta name="theme-color" content="#FF7A50">
+
+<!-- Vercel Web Analytics (privacy-friendly, no cookies). The admin panel's -->
+<!-- Analytics tab reads aggregated totals back out via the Vercel API -- -->
+<!-- see api/admin/analytics.js. Don't rename the 'Android Click' / -->
+<!-- 'iPhone Click' event names below without updating that file too. -->
+<script>
+  window.va = window.va || function () { (window.vaq = window.vaq || []).push(arguments); };
+</script>
+<script defer src="/_vercel/insights/script.js"></script>
 <link rel="icon" type="image/svg+xml" href="/favicon.svg">
 <link rel="icon" type="image/x-icon" href="/favicon.ico">
 <link rel="apple-touch-icon" href="/apple-touch-icon.png">
@@ -337,12 +365,12 @@
     <h1 id="hero-headline">Stay close to the people who matter</h1>
     <p class="sub" id="hero-subtitle">Kall Konnect gently reminds you who to call today, then gets you straight into a call, WhatsApp, Instagram, or Snapchat, one tap away.</p>
     <div class="hero-btns">
-      <a class="btn btn-primary" href="#download">
+      <a class="btn btn-primary" href="#download" onclick="va('event',{name:'Android Click',data:{location:'hero'}})">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v13"/><path d="M6 11l6 6 6-6"/><path d="M4 20h16"/></svg>
         <span id="hero-btn-primary-label">Download for Android</span>
       </a>
-      <a class="btn btn-secondary" href="#download">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="6" y="2.5" width="12" height="19" rx="2.6"/><path d="M10.3 4.6h3.4"/><circle cx="12" cy="18.3" r="0.9" fill="currentColor" stroke="none"/></svg>
+      <a class="btn btn-secondary" href="#download" onclick="va('event',{name:'iPhone Click',data:{location:'hero'}})">
+        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M16.36 12.86c-.02-2.1 1.72-3.1 1.8-3.16-.98-1.44-2.5-1.63-3.05-1.66-1.3-.13-2.53.76-3.19.76-.66 0-1.68-.74-2.76-.72-1.42.02-2.73.83-3.46 2.1-1.47 2.56-.38 6.34 1.06 8.42.7 1.02 1.53 2.16 2.63 2.12 1.05-.04 1.45-.68 2.72-.68 1.27 0 1.63.68 2.75.66 1.13-.02 1.85-1.03 2.55-2.06.8-1.18 1.13-2.32 1.15-2.38-.03-.01-2.19-.84-2.2-3.4z"/><path d="M14.4 6.36c.58-.71.98-1.68.87-2.66-.84.04-1.87.57-2.47 1.27-.53.62-1.02 1.63-.89 2.58.93.07 1.88-.47 2.49-1.19z"/></svg>
         <span id="hero-btn-secondary-label">Install on iPhone</span>
       </a>
     </div>
@@ -506,7 +534,7 @@
       <p class="desc" id="android-desc">Download the app file and install it directly. No Play Store needed.</p>
       <!-- id="apk-download-link" and the data-version attr are targeted by the admin panel's -->
       <!-- APK upload flow (api/admin/apk-link.js) -- don't rename them without updating that too. -->
-      <a id="apk-download-link" class="dl-btn dl-android" href="REPLACE_WITH_YOUR_APK_URL" download="kall-konnect.apk" data-version="">
+      <a id="apk-download-link" class="dl-btn dl-android" href="REPLACE_WITH_YOUR_APK_URL" download="kall-konnect.apk" data-version="" onclick="va('event',{name:'Android Click',data:{location:'card'}})">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v13"/><path d="M6 11l6 6 6-6"/><path d="M4 20h16"/></svg>
         <span id="android-btn-label">Download APK</span>
       </a>
@@ -525,11 +553,11 @@
       </div>
       <h3 id="ios-title">iPhone</h3>
       <p class="desc" id="ios-desc">Add Kall Konnect to your home screen in a few taps using Safari.</p>
-      <a id="ios-download-link" class="dl-btn dl-ios" href="https://kallkonnect.vercel.app" target="_blank" rel="noopener">
+      <a id="ios-download-link" class="dl-btn dl-ios" href="https://kallkonnect.vercel.app" target="_blank" rel="noopener" onclick="va('event',{name:'iPhone Click',data:{location:'card'}})">
         <svg viewBox="0 0 24 24" fill="currentColor"><path d="M16.36 12.86c-.02-2.1 1.72-3.1 1.8-3.16-.98-1.44-2.5-1.63-3.05-1.66-1.3-.13-2.53.76-3.19.76-.66 0-1.68-.74-2.76-.72-1.42.02-2.73.83-3.46 2.1-1.47 2.56-.38 6.34 1.06 8.42.7 1.02 1.53 2.16 2.63 2.12 1.05-.04 1.45-.68 2.72-.68 1.27 0 1.63.68 2.75.66 1.13-.02 1.85-1.03 2.55-2.06.8-1.18 1.13-2.32 1.15-2.38-.03-.01-2.19-.84-2.2-3.4z"/><path d="M14.4 6.36c.58-.71.98-1.68.87-2.66-.84.04-1.87.57-2.47 1.27-.53.62-1.02 1.63-.89 2.58.93.07 1.88-.47 2.49-1.19z"/></svg>
         <span id="ios-btn-label">Open in Safari</span>
       </a>
-      <p class="dl-note" id="ios-note">Opens Kall Konnect in your browser — then follow the steps below to add it to your home screen.</p>
+      <p class="dl-note" id="ios-note">Opens Kall Konnect in your browser. Then follow the steps below to add it to your home screen.</p>
       <div class="steps">
         <div class="step-row">
           <div class="step-num">1</div>

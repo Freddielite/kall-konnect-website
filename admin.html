@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Kall Konnect — Admin</title>
+<title>Kall Konnect Admin</title>
 <link rel="icon" type="image/svg+xml" href="/favicon.svg">
 <link rel="icon" type="image/x-icon" href="/favicon.ico">
 <link rel="apple-touch-icon" href="/apple-touch-icon.png">
@@ -169,6 +169,16 @@
   .progress-track { width: 100%; height: 8px; border-radius: 999px; background: var(--cream-deep); margin-top: 14px; overflow: hidden; display: none; }
   .progress-fill { height: 100%; width: 0%; background: linear-gradient(90deg, var(--coral), var(--coral-deep)); border-radius: 999px; transition: width .2s ease; }
 
+  /* ---------- ANALYTICS ---------- */
+  .stat-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+  .stat-box {
+    background: var(--cream); border-radius: 14px; padding: 18px 20px;
+  }
+  .stat-box .stat-label { display: flex; align-items: center; gap: 8px; font-size: 13px; font-weight: 700; color: var(--ink-soft); margin-bottom: 8px; }
+  .stat-box .stat-label svg { width: 16px; height: 16px; flex-shrink: 0; }
+  .stat-box .stat-value { font-size: 32px; font-weight: 800; line-height: 1; }
+  .stat-note { font-size: 12px; color: var(--ink-faint); margin-top: 14px; }
+
   #app-view { display: none; }
 </style>
 </head>
@@ -265,13 +275,40 @@
 
       <div class="field">
         <label for="apkVersion">Version label</label>
-        <span class="hint">Optional, e.g. v1.4.0 — shown to visitors under the download button.</span>
+        <span class="hint">Optional, e.g. v1.4.0. Shown to visitors under the download button.</span>
         <input type="text" id="apkVersion" placeholder="v1.4.0">
       </div>
 
       <button class="btn-primary" id="apkUploadBtn" disabled>Upload &amp; publish APK</button>
       <div class="progress-track" id="apkProgressTrack"><div class="progress-fill" id="apkProgressFill"></div></div>
       <div id="apkMsg" class="msg"></div>
+    </div>
+
+    <!-- ANALYTICS -->
+    <div class="card">
+      <div class="card-head">
+        <h2>Downloads</h2>
+        <p>How many people have tapped each download button, from Vercel Web Analytics.</p>
+      </div>
+
+      <div class="stat-grid">
+        <div class="stat-box">
+          <div class="stat-label">
+            <svg viewBox="0 0 24 24"><path fill="#3E8C7F" d="M17.6 9.48l1.84-3.18a.5.5 0 00-.87-.5l-1.86 3.22a11.5 11.5 0 00-9.42 0L5.43 5.8a.5.5 0 10-.87.5l1.84 3.18A10.94 10.94 0 002 18h20a10.94 10.94 0 00-4.4-8.52zM7 14.5a1 1 0 110-2 1 1 0 010 2zm10 0a1 1 0 110-2 1 1 0 010 2z"/></svg>
+            Android
+          </div>
+          <div class="stat-value" id="statAndroid">–</div>
+        </div>
+        <div class="stat-box">
+          <div class="stat-label">
+            <svg viewBox="0 0 24 24" fill="var(--ink)"><path d="M16.36 12.86c-.02-2.1 1.72-3.1 1.8-3.16-.98-1.44-2.5-1.63-3.05-1.66-1.3-.13-2.53.76-3.19.76-.66 0-1.68-.74-2.76-.72-1.42.02-2.73.83-3.46 2.1-1.47 2.56-.38 6.34 1.06 8.42.7 1.02 1.53 2.16 2.63 2.12 1.05-.04 1.45-.68 2.72-.68 1.27 0 1.63.68 2.75.66 1.13-.02 1.85-1.03 2.55-2.06.8-1.18 1.13-2.32 1.15-2.38-.03-.01-2.19-.84-2.2-3.4z"/><path d="M14.4 6.36c.58-.71.98-1.68.87-2.66-.84.04-1.87.57-2.47 1.27-.53.62-1.02 1.63-.89 2.58.93.07 1.88-.47 2.49-1.19z"/></svg>
+            iPhone
+          </div>
+          <div class="stat-value" id="statIos">–</div>
+        </div>
+      </div>
+      <div class="msg" id="analyticsMsg"></div>
+      <div class="stat-note" id="analyticsNote">Loading…</div>
     </div>
 
     <!-- PAGE CONTENT -->
@@ -281,15 +318,15 @@
         <p>Everything visitors read on the site. Change anything below, then save at the bottom.</p>
       </div>
 
-      <div class="section-label">Browser tab</div>
+      <div class="section-label">Browser tab &amp; sharing</div>
       <div class="field">
         <label for="f-title">Tab title</label>
-        <span class="hint">Shown in the browser tab and in search results.</span>
+        <span class="hint">Shown in the browser tab, in search results, and as the title when this link is shared on WhatsApp, iMessage, X, and social media.</span>
         <input type="text" id="f-title">
       </div>
       <div class="field">
         <label for="f-metadesc">Search description</label>
-        <span class="hint">The short blurb Google shows under your site's link.</span>
+        <span class="hint">The short blurb Google shows under your site's link, and the description shown when this link is shared on WhatsApp, iMessage, X, and social media.</span>
         <textarea id="f-metadesc"></textarea>
       </div>
 
@@ -422,7 +459,7 @@
       </div>
       <div class="field">
         <label for="f-iosstep4">iPhone step 4</label>
-        <span class="hint">Editing a step removes its bold emphasis — everything else about the site stays the same.</span>
+        <span class="hint">Editing a step removes its bold emphasis. Everything else about the site stays the same.</span>
         <input type="text" id="f-iosstep4">
       </div>
 
@@ -474,7 +511,11 @@
   // person editing it never sees or writes any HTML.
   const FIELDS = [
     { form: 'f-title', selector: '#meta-title' },
+    { form: 'f-title', selector: '#og-title', attr: 'content' },
+    { form: 'f-title', selector: '#twitter-title', attr: 'content' },
     { form: 'f-metadesc', selector: '#meta-description', attr: 'content' },
+    { form: 'f-metadesc', selector: '#og-description', attr: 'content' },
+    { form: 'f-metadesc', selector: '#twitter-description', attr: 'content' },
     { form: 'f-navcta', selector: '#nav-cta' },
     { form: 'f-eyebrow', selector: '#hero-eyebrow' },
     { form: 'f-headline', selector: '#hero-headline' },
@@ -551,7 +592,7 @@
     const isPlaceholder = !link || link.getAttribute('href') === 'REPLACE_WITH_YOUR_APK_URL';
     if (isPlaceholder) {
       statusDot.className = 'status-dot warn';
-      statusText.textContent = 'No build published yet — the site is showing a placeholder link.';
+      statusText.textContent = 'No build published yet. The site is showing a placeholder link.';
     } else {
       statusDot.className = 'status-dot';
       statusText.textContent = version ? `Currently live: ${version}` : 'A build is live (no version label set).';
@@ -580,6 +621,35 @@
       hideMsg(contentMsg);
     } catch (err) {
       showMsg(contentMsg, err.message, 'err');
+    }
+    loadAnalytics();
+  }
+
+  const statAndroid = document.getElementById('statAndroid');
+  const statIos = document.getElementById('statIos');
+  const analyticsMsg = document.getElementById('analyticsMsg');
+  const analyticsNote = document.getElementById('analyticsNote');
+
+  async function loadAnalytics() {
+    statAndroid.textContent = '–';
+    statIos.textContent = '–';
+    analyticsNote.textContent = 'Loading…';
+    hideMsg(analyticsMsg);
+    try {
+      const res = await fetch('/api/admin/analytics');
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error || 'Failed to load analytics');
+      if (!data.configured) {
+        analyticsNote.textContent = '';
+        showMsg(analyticsMsg, data.message || 'Analytics isn\u2019t connected yet.', 'err');
+        return;
+      }
+      statAndroid.textContent = data.android.toLocaleString();
+      statIos.textContent = data.ios.toLocaleString();
+      analyticsNote.textContent = 'Counts every tap on a download button, hero and card combined, all time.';
+    } catch (err) {
+      analyticsNote.textContent = '';
+      showMsg(analyticsMsg, err.message, 'err');
     }
   }
 
@@ -645,7 +715,7 @@
     if (f) {
       dropzone.classList.add('has-file');
       dzTitle.textContent = f.name;
-      dzSub.textContent = `${(f.size / (1024 * 1024)).toFixed(1)} MB — tap to choose a different file`;
+      dzSub.textContent = `${(f.size / (1024 * 1024)).toFixed(1)} MB, tap to choose a different file`;
     } else {
       dropzone.classList.remove('has-file');
       dzTitle.textContent = 'Choose an APK file';
