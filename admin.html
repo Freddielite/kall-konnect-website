@@ -669,6 +669,7 @@
 
       const link = doc.querySelector('#apk-download-link');
       link.setAttribute('href', blob.url);
+      link.setAttribute('download', 'kall-konnect.apk');
       link.setAttribute('data-version', version);
 
       // This note is ONLY the version label (or nothing). The separate,
