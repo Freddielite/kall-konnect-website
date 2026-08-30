@@ -29,13 +29,6 @@ without touching code.
     editable from the admin, give that element a stable `id` and add a
     matching entry to the `FIELDS` array near the top of the `<script>` in
     `admin.html`.
-  - The **Downloads** stats on the admin panel show total taps on the
-    Android and iPhone buttons, read from Vercel Web Analytics. Tracking
-    happens client-side in `index.html` (the `va('event', ...)` calls on
-    each button); the admin panel reads the totals back out through
-    `api/admin/analytics.js`, which queries Vercel's Web Analytics API.
-    Nothing is stored outside Vercel's own analytics — this endpoint is
-    read-only.
 - Nothing is stored in a database. GitHub is the only source of truth for
   the page content; Vercel Blob is the only storage for APK files.
 
@@ -58,24 +51,12 @@ without touching code.
    - Repository access: "Only select repositories" → pick this repo.
    - Permissions: Contents → Read and write. Nothing else.
 
-5. **Turn on Web Analytics**: in the Vercel dashboard, open this project →
-   Analytics tab → Enable. This is what powers the "Downloads" stats on
-   the admin panel and needs no extra package since `index.html` already
-   includes the tracking script tag directly.
-
-6. **Create a Vercel access token** for the admin panel to read those stats
-   back: Account Settings → Tokens → Create Token (read access is enough).
-   Also grab this project's Project ID (Project → Settings → General) and,
-   if this project lives inside a team rather than your personal account,
-   the Team ID (Team Settings → General).
-
-7. **Set the remaining env vars** in Vercel (Project → Settings →
+5. **Set the remaining env vars** in Vercel (Project → Settings →
    Environment Variables) — see `.env.example` for the full list:
    `ADMIN_PASSWORD`, `SESSION_SECRET`, `GITHUB_TOKEN`, `GITHUB_OWNER`,
-   `GITHUB_REPO`, `GITHUB_BRANCH`, `VERCEL_TOKEN`, `VERCEL_PROJECT_ID`, and
-   `VERCEL_TEAM_ID` if applicable.
+   `GITHUB_REPO`, `GITHUB_BRANCH`.
 
-8. Redeploy once after setting env vars (Vercel doesn't pick them up
+6. Redeploy once after setting env vars (Vercel doesn't pick them up
    retroactively for an existing deployment).
 
 9. Visit `yourdomain.com/admin`, sign in with `ADMIN_PASSWORD`, upload your
