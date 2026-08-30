@@ -84,7 +84,7 @@
     display: flex; align-items: center; justify-content: space-between;
     padding: 20px 24px; max-width: 1080px; margin: 0 auto; gap: 12px;
   }
-  .logo { display:flex; align-items:center; gap:10px; font-family:'Poppins'; font-weight:800; font-size: 19px; color:var(--ink); }
+  .logo { display:flex; align-items:center; gap:10px; font-family:'Poppins'; font-weight:800; font-size: 19px; color:var(--ink); white-space:nowrap; }
   .logo-mark {
     width: 38px; height: 38px; border-radius: 12px;
     background: var(--coral);
@@ -93,10 +93,10 @@
     overflow: hidden; flex-shrink:0;
   }
   .logo-mark svg { width: 100%; height: 100%; }
-  .nav-right { display:flex; align-items:center; gap:10px; }
+  .nav-right { display:flex; align-items:center; gap:10px; flex-shrink:0; }
   nav a.nav-btn {
     background: var(--surface); color:var(--coral-deep); border: 2px solid var(--cream-deep);
-    padding: 9px 20px; border-radius: 999px; text-decoration:none;
+    padding: 9px 20px; border-radius: 999px; text-decoration:none; white-space:nowrap;
     font-weight:600; font-size: 14px; transition: transform .15s ease, box-shadow .15s ease;
   }
   html[data-theme="dark"] nav a.nav-btn{ border-color: var(--border-soft); }
@@ -113,6 +113,16 @@
   .theme-toggle .icon-moon{ display:none; }
   html[data-theme="dark"] .theme-toggle .icon-sun{ display:none; }
   html[data-theme="dark"] .theme-toggle .icon-moon{ display:block; }
+
+  @media (max-width: 480px) {
+    nav { padding: 14px 16px; gap: 8px; }
+    .logo { font-size: 14.5px; gap: 6px; }
+    .logo-mark { width: 30px; height: 30px; border-radius: 9px; }
+    .nav-right { gap: 6px; }
+    nav a.nav-btn { padding: 7px 13px; font-size: 12px; }
+    .theme-toggle { width: 32px; height: 32px; border-width: 1.5px; }
+    .theme-toggle svg { width: 14px; height: 14px; }
+  }
 
   /* ---------- HERO ---------- */
   .hero {
