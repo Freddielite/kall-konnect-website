@@ -1,0 +1,15 @@
+<svg viewBox="0 0 380 380" xmlns="http://www.w3.org/2000/svg">
+  <circle cx="190" cy="190" r="150" fill="#fff5eb"/>
+  <g clip-path="url(#nlc)">
+    <clipPath id="nlc"><circle cx="190" cy="190" r="150"/></clipPath>
+    <polygon points="40,40 340,40 340,340" fill="#FFB088"/>
+    <polygon points="40,40 40,340 340,340" fill="#fff5eb"/>
+    <ellipse cx="120" cy="300" rx="56" ry="44" fill="#FF7A50"/>
+    <circle cx="120" cy="228" r="40" fill="#FFCBA8"/>
+    <path d="M 82 228 A 38 38 0 0 1 158 228 L 158 210 A 38 38 0 0 0 82 210 Z" fill="#7A4A32"/>
+    <ellipse cx="260" cy="170" rx="56" ry="44" fill="#3E8C7F"/>
+    <circle cx="260" cy="98" r="40" fill="#7A5138"/>
+    <path d="M 222 98 A 38 38 0 0 1 298 98 L 298 80 A 38 38 0 0 0 222 80 Z" fill="#241812"/>
+  </g>
+  <circle cx="190" cy="190" r="150" fill="none" stroke="#FF9670" stroke-width="10"/>
+</svg>
