@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Kall Konnect — Admin</title>
+<style>
+  :root { --coral: #FF7A50; --ink: #2A2A33; --ink-soft: #6b6b76; --bg: #fff5eb; --surface: #ffffff; --border: #eadfd3; }
+  * { box-sizing: border-box; }
+  body { font-family: system-ui, -apple-system, sans-serif; background: var(--bg); color: var(--ink); margin: 0; padding: 24px; }
+  .wrap { max-width: 760px; margin: 0 auto; }
+  h1 { font-size: 20px; margin-bottom: 4px; }
+  .sub { color: var(--ink-soft); font-size: 14px; margin-bottom: 24px; }
+  .card { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 20px; margin-bottom: 20px; }
+  label { display: block; font-size: 13px; font-weight: 600; margin-bottom: 6px; }
+  input[type=password], input[type=text], textarea {
+    width: 100%; padding: 10px 12px; border: 1px solid var(--border); border-radius: 8px;
+    font-size: 14px; font-family: inherit; background: #fff;
+  }
+  textarea { min-height: 420px; font-family: ui-monospace, monospace; font-size: 12.5px; line-height: 1.5; resize: vertical; }
+  button {
+    background: var(--coral); color: #fff; border: none; padding: 10px 18px; border-radius: 8px;
+    font-size: 14px; font-weight: 600; cursor: pointer; margin-top: 10px;
+  }
+  button:disabled { opacity: 0.5; cursor: not-allowed; }
+  button.secondary { background: transparent; color: var(--ink-soft); border: 1px solid var(--border); }
+  .msg { font-size: 13px; margin-top: 10px; padding: 8px 12px; border-radius: 8px; }
+  .msg.ok { background: #e3f5ee; color: #1f7a5c; }
+  .msg.err { background: #fdecea; color: #b3261e; }
+  .row { display: flex; gap: 12px; align-items: flex-end; flex-wrap: wrap; }
+  .row > div { flex: 1; min-width: 180px; }
+  #app { display: none; }
+  progress { width: 100%; margin-top: 10px; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>Kall Konnect — Admin</h1>
+  <p class="sub">Edit the download page and push a new APK build. Every save is a real commit to GitHub, which redeploys the site.</p>
+
+  <div id="login" class="card">
+    <label for="pw">Admin password</label>
+    <input type="password" id="pw" autocomplete="current-password">
+    <button id="loginBtn">Sign in</button>
+    <div id="loginMsg"></div>
+  </div>
+
+  <div id="app">
+    <div class="card">
+      <div class="row">
+        <div><h3 style="margin:0 0 4px">Android build</h3><p class="sub" style="margin:0">Upload a new APK — the download link and version note update automatically.</p></div>
+        <button class="secondary" id="logoutBtn" style="margin-top:0">Sign out</button>
+      </div>
+      <div class="row" style="margin-top:14px">
+        <div>
+          <label for="apkFile">APK file</label>
+          <input type="text" id="apkFileName" disabled placeholder="No file chosen" style="background:#f7f2ea">
+          <input type="file" id="apkFile" accept=".apk" style="margin-top:6px">
+        </div>
+        <div>
+          <label for="apkVersion">Version label (optional, e.g. v1.4.0)</label>
+          <input type="text" id="apkVersion" placeholder="v1.4.0">
+        </div>
+      </div>
+      <button id="apkUploadBtn" disabled>Upload &amp; publish APK</button>
+      <progress id="apkProgress" value="0" max="100" style="display:none"></progress>
+      <div id="apkMsg"></div>
+    </div>
+
+    <div class="card">
+      <h3 style="margin:0 0 4px">Page HTML</h3>
+      <p class="sub" style="margin:0 0 12px">Raw content of index.html. Edit anything — copy, colors, sections — then save.</p>
+      <textarea id="contentBox" spellcheck="false"></textarea>
+      <div class="row">
+        <button id="reloadBtn" class="secondary">Reload from GitHub</button>
+        <button id="saveBtn">Save &amp; deploy</button>
+      </div>
+      <div id="contentMsg"></div>
+    </div>
+  </div>
+</div>
+
+<script type="module">
+  import { upload } from 'https://esm.sh/@vercel/blob@2.8.0/client';
+
+  const loginCard = document.getElementById('login');
+  const app = document.getElementById('app');
+  const pwInput = document.getElementById('pw');
+  const loginBtn = document.getElementById('loginBtn');
+  const loginMsg = document.getElementById('loginMsg');
+  const logoutBtn = document.getElementById('logoutBtn');
+
+  const contentBox = document.getElementById('contentBox');
+  const saveBtn = document.getElementById('saveBtn');
+  const reloadBtn = document.getElementById('reloadBtn');
+  const contentMsg = document.getElementById('contentMsg');
+
+  const apkFile = document.getElementById('apkFile');
+  const apkFileName = document.getElementById('apkFileName');
+  const apkVersion = document.getElementById('apkVersion');
+  const apkUploadBtn = document.getElementById('apkUploadBtn');
+  const apkProgress = document.getElementById('apkProgress');
+  const apkMsg = document.getElementById('apkMsg');
+
+  let currentSha = null;
+
+  function showMsg(el, text, ok) {
+    el.textContent = text;
+    el.className = 'msg ' + (ok ? 'ok' : 'err');
+  }
+
+  async function checkSession() {
+    const res = await fetch('/api/admin/me');
+    const data = await res.json();
+    if (data.authenticated) {
+      loginCard.style.display = 'none';
+      app.style.display = 'block';
+      loadContent();
+    }
+  }
+
+  async function loadContent() {
+    showMsg(contentMsg, 'Loading…', true);
+    try {
+      const res = await fetch('/api/admin/content');
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error || 'Failed to load');
+      contentBox.value = data.content;
+      currentSha = data.sha;
+      contentMsg.textContent = '';
+    } catch (err) {
+      showMsg(contentMsg, err.message, false);
+    }
+  }
+
+  loginBtn.addEventListener('click', async () => {
+    loginBtn.disabled = true;
+    try {
+      const res = await fetch('/api/admin/login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ password: pwInput.value }),
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error || 'Login failed');
+      pwInput.value = '';
+      loginCard.style.display = 'none';
+      app.style.display = 'block';
+      loadContent();
+    } catch (err) {
+      showMsg(loginMsg, err.message, false);
+    } finally {
+      loginBtn.disabled = false;
+    }
+  });
+
+  pwInput.addEventListener('keydown', (e) => { if (e.key === 'Enter') loginBtn.click(); });
+
+  logoutBtn.addEventListener('click', async () => {
+    await fetch('/api/admin/logout', { method: 'POST' });
+    location.reload();
+  });
+
+  reloadBtn.addEventListener('click', loadContent);
+
+  saveBtn.addEventListener('click', async () => {
+    saveBtn.disabled = true;
+    showMsg(contentMsg, 'Saving…', true);
+    try {
+      const res = await fetch('/api/admin/content', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          content: contentBox.value,
+          sha: currentSha,
+          message: 'Edit index.html via admin panel',
+        }),
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error || 'Save failed');
+      currentSha = data.sha;
+      showMsg(contentMsg, 'Saved. Vercel will redeploy in a moment.', true);
+    } catch (err) {
+      showMsg(contentMsg, err.message, false);
+    } finally {
+      saveBtn.disabled = false;
+    }
+  });
+
+  apkFile.addEventListener('change', () => {
+    const f = apkFile.files[0];
+    apkFileName.value = f ? f.name : '';
+    apkUploadBtn.disabled = !f;
+  });
+
+  apkUploadBtn.addEventListener('click', async () => {
+    const file = apkFile.files[0];
+    if (!file) return;
+    apkUploadBtn.disabled = true;
+    apkProgress.style.display = 'block';
+    apkProgress.value = 0;
+    showMsg(apkMsg, 'Uploading to storage…', true);
+    try {
+      // 1. Upload the APK straight to Vercel Blob from the browser. The
+      //    file never touches our own serverless function, so there's no
+      //    4.5MB payload limit here.
+      const blob = await upload(`releases/${Date.now()}-${file.name}`, file, {
+        access: 'public',
+        handleUploadUrl: '/api/admin/blob-upload',
+        onUploadProgress: (p) => { apkProgress.value = p.percentage; },
+      });
+
+      // 2. Fetch the latest index.html, patch the download link + version
+      //    note, and commit it back through the same content endpoint the
+      //    HTML editor above uses.
+      showMsg(apkMsg, 'Updating the download page…', true);
+      const getRes = await fetch('/api/admin/content');
+      const getData = await getRes.json();
+      if (!getRes.ok) throw new Error(getData.error || 'Could not load index.html');
+
+      let html = getData.content;
+      const version = apkVersion.value.trim();
+      const noteText = version
+        ? `Latest build: ${version}. Your phone may ask to "allow installs from unknown sources." That's normal, just tap allow and continue.`
+        : `Your phone may ask to "allow installs from unknown sources." That's normal, just tap allow and continue.`;
+
+      html = html.replace(
+        /(<a id="apk-download-link"[^>]*\shref=")[^"]*(")/,
+        `$1${blob.url}$2`
+      );
+      html = html.replace(
+        /(<a id="apk-download-link"[^>]*\sdata-version=")[^"]*(")/,
+        `$1${version}$2`
+      );
+      html = html.replace(
+        /<p id="apk-version-note"[^>]*>[^<]*<\/p>/,
+        `<p id="apk-version-note" class="dl-note">${noteText}</p>`
+      );
+
+      const saveRes = await fetch('/api/admin/content', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          content: html,
+          sha: getData.sha,
+          message: `Publish APK ${version || file.name}`,
+        }),
+      });
+      const saveData = await saveRes.json();
+      if (!saveRes.ok) throw new Error(saveData.error || 'Could not save index.html');
+
+      currentSha = saveData.sha;
+      contentBox.value = html;
+      showMsg(apkMsg, 'APK published. Vercel will redeploy in a moment.', true);
+      apkFile.value = '';
+      apkFileName.value = '';
+      apkVersion.value = '';
+      apkUploadBtn.disabled = true;
+    } catch (err) {
+      showMsg(apkMsg, err.message, false);
+    } finally {
+      apkProgress.style.display = 'none';
+    }
+  });
+
+  checkSession();
+</script>
+</body>
+</html>
