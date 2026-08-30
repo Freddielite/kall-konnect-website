@@ -397,6 +397,18 @@
         <textarea id="f-iosdesc"></textarea>
       </div>
       <div class="field">
+        <label for="f-iosurl">iPhone button link (opens in browser)</label>
+        <input type="text" id="f-iosurl" placeholder="https://kallkonnect.vercel.app">
+      </div>
+      <div class="field">
+        <label for="f-iosbtnlabel">iPhone button text</label>
+        <input type="text" id="f-iosbtnlabel">
+      </div>
+      <div class="field">
+        <label for="f-iosnote">iPhone button note</label>
+        <textarea id="f-iosnote"></textarea>
+      </div>
+      <div class="field">
         <label for="f-iosstep1">iPhone step 1</label>
         <input type="text" id="f-iosstep1">
       </div>
@@ -485,6 +497,9 @@
     { form: 'f-androidnote', selector: '#android-note' },
     { form: 'f-iostitle', selector: '#ios-title' },
     { form: 'f-iosdesc', selector: '#ios-desc' },
+    { form: 'f-iosurl', selector: '#ios-download-link', attr: 'href' },
+    { form: 'f-iosbtnlabel', selector: '#ios-btn-label' },
+    { form: 'f-iosnote', selector: '#ios-note' },
     { form: 'f-iosstep1', selector: '#ios-step-1' },
     { form: 'f-iosstep2', selector: '#ios-step-2' },
     { form: 'f-iosstep3', selector: '#ios-step-3' },
