@@ -650,7 +650,10 @@
       // 1. Upload the APK straight to Vercel Blob from the browser. The
       //    file never touches our own serverless function, so there's no
       //    4.5MB payload limit here.
-      const blob = await upload(`releases/${Date.now()}-${file.name}`, file, {
+      // Fixed pathname to match the server route's addRandomSuffix:false /
+      // allowOverwrite:true config -- every publish replaces the same file,
+      // so the Save As dialog always suggests "kall-konnect.apk".
+      const blob = await upload('releases/kall-konnect.apk', file, {
         access: 'public',
         handleUploadUrl: '/api/admin/blob-upload',
         onUploadProgress: (p) => { apkProgressFill.style.width = p.percentage + '%'; },

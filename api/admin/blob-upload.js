@@ -32,7 +32,16 @@ export default async function handler(req, res) {
           'application/vnd.android.package-archive',
           'application/octet-stream',
         ],
-        addRandomSuffix: true,
+        // Fixed pathname (not addRandomSuffix) so the file Vercel Blob
+        // serves is always named "kall-konnect.apk" for anyone downloading
+        // it -- addRandomSuffix would tack on a random string that ends up
+        // as the filename in the visitor's Save As dialog. allowOverwrite
+        // lets each new publish replace the previous build at that same
+        // path. cacheControlMaxAge is kept short since this same URL now
+        // changes content on every publish, unlike a normal immutable blob.
+        addRandomSuffix: false,
+        allowOverwrite: true,
+        cacheControlMaxAge: 60,
         maximumSizeInBytes: 300 * 1024 * 1024, // 300MB, well above any real APK
       }),
       onUploadCompleted: async ({ blob }) => {
